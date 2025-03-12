@@ -1,5 +1,5 @@
 param location string = 'westeurope'
-param storageAccountName string = 'myazureprojectstorageacct12345'
+param storageAccountName string = 'johanstorage20250312'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: storageAccountName

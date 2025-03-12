@@ -12,11 +12,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Extract Repository Name
+        run: |
+          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2 | tr '[:upper:]' '[:lower:]' | tr -d '_')
+          echo "RESOURCE_GROUP=$REPO_NAME-rg" >> $GITHUB_ENV
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Ensure Resource Group Exists
+        run: |
+          az group create --name $RESOURCE_GROUP --location westeurope --output json
+
       - name: Deploy Bicep template
         run: |
-          az deployment group create --resource-group bicep-deployments --template-file main.bicep
+          az deployment group create --resource-group $RESOURCE_GROUP --template-file main.bicep
